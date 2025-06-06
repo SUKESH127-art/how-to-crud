@@ -1,34 +1,24 @@
 /** @format */
 
 import ".././App.css";
+import React, { useState, useEffect } from "react";
+import { axios } from "axios";
 
 export default function TableList({ handleOpen }) {
-  let clients = [
-    {
-      id: 1,
-      name: "Nicki Minaj",
-      email: "nickim@gmail.com",
-      job: "Queen of Rap",
-      rate: "$100/hr",
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: "Cardi B",
-      email: "cardib@gmail.com",
-      job: "Rapper",
-      rate: "$20/hr",
-      isActive: false,
-    },
-    {
-      id: 3,
-      name: "Doja Cat",
-      email: "MTS@gmail.com",
-      job: "Pop Star",
-      rate: "$60/hr",
-      isActive: true,
-    },
-  ];
+  const [clients, setClients] = useState([]);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/clients");
+        setClients(response.data);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      }
+    };
+
+    fetchClients();
+  }, []); // The empty array ensures this effect runs only once on mount
 
   return (
     <>
@@ -55,10 +45,10 @@ export default function TableList({ handleOpen }) {
                 <td>
                   <button
                     className={`btn rounded-full w-20 ${
-                      client.isActive ? `btn-primary` : `btn-outline-primary`
+                      client.isactive ? `btn-primary` : `btn-outline-primary`
                     }`}
                   >
-                    {client.isActive ? "Active" : "Inactive"}
+                    {client.isactive ? "Active" : "Inactive"}
                   </button>
                 </td>
                 <td>
