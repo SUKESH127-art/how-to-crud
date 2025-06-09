@@ -2,7 +2,11 @@
 
 import ".././App.css";
 
-export default function Navbar({ onOpen }) {
+export default function Navbar({ onOpen, onSearch }) {
+  const handleSearch = (event) => {
+    onSearch(event.target.value.toLowerCase());
+  };
+
   return (
     <div className="navbar bg-base-100 shadow-sm p-4">
       <div className="navbar-start">
@@ -27,7 +31,12 @@ export default function Navbar({ onOpen }) {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" className="grow" required placeholder="Search" />
+          <input
+            onChange={handleSearch}
+            type="search"
+            className="grow"
+            placeholder="Search"
+          />
         </label>
       </div>
 

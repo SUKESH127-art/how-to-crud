@@ -1,20 +1,60 @@
 /** @format */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ".././App.css";
 
-export default function ModalForm({ isOpen, onClose, mode, onSubmit }) {
+export default function ModalForm({
+  isOpen,
+  onClose,
+  mode,
+  OnSubmit,
+  clientData,
+}) {
   const [rate, setRate] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [job, setJob] = useState("");
   const [isActive, setIsActive] = useState(false);
 
-  // handle change of status
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit();
+  const handleStatusChange = async (e) => {
+    setIsActive(e.target.value === "Active"); // Set status as boolean
   };
+
+  // handle change of status
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const updateData = {
+        name,
+        email,
+        job,
+        rate: Number(rate),
+        isactive: isActive,
+      };
+      await OnSubmit(updateData);
+      onClose();
+    } catch (err) {
+      console.error("Error adding client", err);
+    }
+  };
+
+  useEffect(() => {
+    if (mode === "edit" && clientData) {
+      // If in edit mode, populate the fields with existing data
+      setName(clientData.name);
+      setEmail(clientData.email);
+      setJob(clientData.job);
+      setRate(clientData.rate);
+      setIsActive(clientData.isactive);
+    } else {
+      // Reset fields for add mode
+      setName("");
+      setEmail("");
+      setJob("");
+      setRate("");
+      setIsActive(false);
+    }
+  }, [mode, clientData]);
 
   return (
     <>
@@ -70,7 +110,7 @@ export default function ModalForm({ isOpen, onClose, mode, onSubmit }) {
               <select
                 value={isActive ? "Active" : "Inactive"}
                 className="select select-bordered w-full mt-4 max-w-xs"
-                onChange={(e) => setIsActive(e.target.value === "Active")}
+                onChange={handleStatusChange}
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
